@@ -1,39 +1,40 @@
-//////////////////////////////
-//import our depedencies
-/////////////////////////////
-require('dotenv').config()
-const express = require('express')
-const morgan = require('morgan')
-const methodOverride = require('method-override')
-// we'll also import our fruits model when we have it
+/////////////////////////////////
+ // import dependencies
+ /////////////////////////////////
+ // this allows us to load our env variables
+ require('dotenv').config()
+ const express = require('express')
+ const morgan = require('morgan')
+ const methodOverride = require('method-override')
+ const Fruit = require('./models/fruits')
 
+ ////////////////////////////////////////////
+ // Create our express application object
+ ////////////////////////////////////////////
+ const app = require('liquid-express-views')(express())
 
-//////////////////////
-// create our express application
-//////////////////////
-const app = require('liquid-express-views')(express())
+ ////////////////////////////////////////////
+ // Middleware
+ ////////////////////////////////////////////
+ // this is for request logging
+ app.use(morgan('tiny'))
+ app.use(methodOverride('_method'))
+ // parses urlencoded request bodies
+ app.use(express.urlencoded({ extended: false }))
+ // to serve files from public statically
+ app.use(express.static('public'))
 
-////////////
-//middleware
-///////////
-app.use(morgan('tiny'))
-app.use(methodOverride('method'))
-//parses urlencoded 
-app.use(express.urlencoded({ extended :false }))
-// to serve files from public
-app.use(express.static('public'))
+ ////////////////////////////////////////////
+ // Routes
+ ////////////////////////////////////////////
+ app.get('/', (req, res) => {
+     res.send('your server is running, better go catch it')
+ })
 
-/////////
-//routes
-///////
-app.get('/', (req,res) => {
-    res.send('your server is running')
-})
-
-///////////////////////
-//server listener
-/////////////////////
-const PORT = process.env.PORT
-app.listen(PORT, () => {
-    console.log('app is listening on port: ${PORT}')
-})
+ ////////////////////////////////////////////
+ // Server Listener
+ ////////////////////////////////////////////
+ const PORT = process.env.PORT
+ app.listen(PORT, () => {
+     console.log(`app is listening on port: ${PORT}`)
+ }) 
